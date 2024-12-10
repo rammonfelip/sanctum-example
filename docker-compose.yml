@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: laravel_app
+        ports:
+            - "8081:8000"
+        volumes:
+            - .:/var/www/html
+        working_dir: /var/www/html
+        command: php artisan serve --host=0.0.0.0 --port=8000
+        depends_on:
+            - mailhog
+        environment:
+            - DB_CONNECTION=sqlite
+            - MAIL_MAILER=smtp
+            - MAIL_HOST=mailhog
+            - MAIL_PORT=1025
+            - MAIL_USERNAME=null
+            - MAIL_PASSWORD=null
+            - MAIL_ENCRYPTION=null
+
+    mailhog:
+        image: mailhog/mailhog
+        container_name: mailhog
+        ports:
+            - "8025:8025" # Interface web para visualizar os e-mails
+            - "1025:1025" # Porta SMTP para Laravel enviar os e-mails
+
+volumes:
+    app_data:

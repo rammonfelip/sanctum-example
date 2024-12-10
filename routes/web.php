@@ -19,6 +19,8 @@ Route::middleware('guest')->group(function () {
     Route::get('consultar-cep/{cep}', [CepController::class, 'consultar'])->name('cep.consultar');
 });
 
-Route::middleware(['web'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile-edit', [DashboardController::class, 'index'])->name('profile.edit');
 });
+

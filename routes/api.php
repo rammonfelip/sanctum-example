@@ -9,6 +9,9 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', [AuthController::class, 'user']);
-    Route::get('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [AuthController::class, 'user'])->name('user');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::get('/verificar-token', [AuthController::class, 'verificarToken']);
 });
+

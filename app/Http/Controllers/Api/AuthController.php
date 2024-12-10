@@ -56,12 +56,30 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard');
+//        return redirect()->route('dashboard');
+        return response()->json([
+            'message' => 'Login realizado com sucesso!',
+            'token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user
+        ]);
+    }
+
+    public function verificarToken(Request $request)
+    {
+        $token = $request->token;
+
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+
+        return $request->all();
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
             'message' => 'Logout realizado com sucesso'

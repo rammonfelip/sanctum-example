@@ -75,29 +75,3 @@
         </div>
     </div>
 </x-app-layout>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Verifica se existe token antes de qualquer coisa
-        if (!localStorage.getItem('token')) {
-            window.location.href = '/';
-            return;
-        }
-
-        loadDashboardData();
-    });
-
-    async function loadDashboardData() {
-        try {
-            const response = await axios.get('/api/dashboard-data');
-            document.getElementById('dashboard-data').innerHTML = `
-            <h1>Bem vindo ${response.data.user.name}</h1>
-            <!-- Renderize seus dados aqui -->
-        `;
-        } catch (error) {
-            if (error.response?.status === 401) {
-                localStorage.removeItem('token');
-                window.location.href = '/';
-            }
-        }
-    }
-</script>

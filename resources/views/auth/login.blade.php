@@ -34,7 +34,7 @@
                     {{ __('Esqueceu sua senha?') }}
                 </a>
 
-                <x-primary-button class="ms-3">
+                <x-primary-button id="send" class="ms-3">
                     {{ __('Entrar') }}
                 </x-primary-button>
             </div>
@@ -58,10 +58,15 @@
             withCredentials: true,
         })
             .then(response => {
-                console.log(response); return false;
-                localStorage.setItem('token', response.data.token);
+                if (response.data.token) {
+                    showMessage('success', response.data.message);
+                    localStorage.setItem('token', response.data.token);
 
-                showMessage('success', response.data.message);
+                    // Redireciona após 1.5 segundos
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 1500);
+                }
             })
             .catch(error => {
                 if (error.response && error.response.data && error.response.data.errors) {

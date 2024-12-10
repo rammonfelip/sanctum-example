@@ -35,17 +35,11 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                            <x-dropdown-link href="#" id="logout">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
@@ -83,22 +77,48 @@
                 </div>
 
                 <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('Profile') }}
-                    </x-responsive-nav-link>
 
                     <!-- Authentication -->
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
 
-                        <x-responsive-nav-link :href="route('logout')"
-                                               onclick="event.preventDefault();
-                                        this.closest('form').submit();">
+                        <x-dropdown-link href="#" id="logout">
                             {{ __('Log Out') }}
-                        </x-responsive-nav-link>
+                        </x-dropdown-link>
+
                     </form>
                 </div>
             </div>
         @endif
     </div>
 </nav>
+
+<script>
+    document.getElementById('logout').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const token = localStorage.getItem('token'); // Obtém o token armazenado
+
+        if (!token) {
+            alert('Token não encontrado. Por favor, faça login novamente.');
+            return;
+        }
+
+        axios.post('/api/logout', {}, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        })
+            .then(response => {
+                // Limpa o token e redireciona para a página de login
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            })
+            .catch(error => {
+                console.error('Erro ao realizar logout:', error.response);
+                alert('Erro ao realizar logout. Tente novamente.');
+            });
+
+    });
+</script>
