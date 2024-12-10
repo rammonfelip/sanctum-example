@@ -17,12 +17,18 @@ class AuthController extends Controller
         return $request->user();
     }
 
-    public function register(RegisterRequest $request)
+    public function register(Request $request)
     {
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'rua' => $request->rua,
+            'numero' => $request->numero,
+            'bairro' => $request->bairro,
+            'cidade' => $request->cidade,
+            'estado' => $request->estado,
+            'cep' => $request->cep,
         ]);
 
         return response()->json([
@@ -42,7 +48,7 @@ class AuthController extends Controller
         if (!Auth::attempt($credentials)) {
             return response()->json([
                 'message' => 'Credenciais inválidas.',
-            ]);
+            ], 401);
         }
 
         $user = Auth::user();
@@ -50,12 +56,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return response()->json([
-            'message' => 'Login realizado com sucesso!',
-            'token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user
-        ]);
+        return redirect()->route('dashboard');
     }
 
     public function logout(Request $request)

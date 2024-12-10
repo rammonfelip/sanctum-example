@@ -96,7 +96,7 @@
         const cep = this.value.replace(/\D/g, ''); // Remove caracteres não numéricos
 
         if (cep.length === 8) { // Valida o CEP
-            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            fetch(`/consultar-cep/${cep}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.erro) {

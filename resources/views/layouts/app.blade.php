@@ -32,5 +32,10 @@
                 {{ $slot }}
             </main>
         </div>
+    <script>
+        if (localStorage.getItem('token')) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+        }
+    </script>
     </body>
 </html>

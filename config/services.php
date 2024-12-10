@@ -35,4 +35,5 @@ return [
         ],
     ],
 
+    'api_cep' => env('VIACEP_API'),
 ];
