@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CepController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -14,8 +15,6 @@ Route::middleware('guest')->group(function () {
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
-
     Route::get('consultar-cep/{cep}', [CepController::class, 'consultar'])->name('cep.consultar');
 });
 
@@ -24,3 +23,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile-edit', [DashboardController::class, 'index'])->name('profile.edit');
 });
 
+require __DIR__ . '/auth.php';
