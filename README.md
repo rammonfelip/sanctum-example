@@ -1,66 +1,85 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Desafio Projeto Laravel Sanctum
 
-## About Laravel
+## 1. Instruções
+Após fazer o clone do projeto, basta rodar o comando para construir e subir os containers do docker
+````
+docker-compose up -d --build
+````
+Após finalizar essa será a configuração das aplicações:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Serviço | URL              | Descrição                               |
+|:--------|:-----------------|:----------------------------------------|
+| Laravel | `localhost:8081` | Aplicação Laravel para Cadastro e Login |
+| Mailhog | `localhost:8025` | Caixa de Entrada de e-mails             |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Documentação da API
+As rotas de login são acessíveis via API, é gerado o token via Sanctum e precisa ser passado no Header da requisição
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+#### Cadastro de Usuário
 
-## Learning Laravel
+```http
+  POST /api/register
+```
+|Parâmetro |	`Tipo`|	Descrição|
+|:-----------| :--------- |:----------------------------------|
+|name |	`string`|	Obrigatório. Nome do usuário. Deve ter no máximo 255 caracteres.|
+|email |	`string`|	Obrigatório. Email do usuário. Deve ser um email válido, único na tabela users.|
+|password |	`string`|	Obrigatório. Senha do usuário. Deve ter no mínimo 8 caracteres e ser confirmada.|
+|cep |	`string`|	Obrigatório. CEP do endereço. Deve ter exatamente 8 caracteres.|
+|rua |	`string`|	Obrigatório. Nome da rua. Deve ter no máximo 255 caracteres.|
+|bairro |	`string`|	Obrigatório. Nome do bairro. Deve ter no máximo 255 caracteres.|
+|numero |	`string`|	Opcional. Número do endereço. Deve ter no máximo 10 caracteres.|
+|cidade |	`string`|	Obrigatório. Nome da cidade. Deve ter no máximo 255 caracteres.|
+|estado |	`string`|	Obrigatório. Sigla do estado. Deve ter exatamente 2 caracteres.|
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```json
+{
+  "name": "João Silva",
+  "email": "joao.silva@example.com",
+  "password": "senha123",
+  "password_confirmation": "senha123",
+  "cep": "12345678",
+  "rua": "Rua Exemplo",
+  "bairro": "Centro",
+  "numero": "123",
+  "cidade": "São Paulo",
+  "estado": "SP"
+}
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### Login
 
-## Laravel Sponsors
+```http
+  POST /api/login
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Parâmetro  | Tipo       | Descrição                                 |
+|:-----------| :--------- | :---------------------------------------- |
+| `email`    | `string` | **Obrigatório** |
+| `password` | `string` | **Obrigatório** |
 
-### Premium Partners
+#### Retorna Usuário
+Este endpoint retorna os dados do usuário autenticado. O usuário deve estar autenticado e fornecer o token de autenticação no cabeçalho da requisição.
+```http request
+    GET /api/user
+```
+Cabeçalhos
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+| Campo |	Tipo	| Descrição |
+|:-----------| :--------- | :--------------------------------------- |
+|Authorization |	string	| Obrigatório. Token Bearer gerado no login (Bearer <seu_token_aqui>).|
+|Accept |	string	| application/json|
 
-## Contributing
+```json
+{
+  "id": 1,
+  "name": "João Silva",
+  "email": "joao.silva@example.com",
+  "created_at": "2023-12-09T12:00:00.000000Z",
+  "updated_at": "2023-12-09T12:00:00.000000Z"
+}
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
